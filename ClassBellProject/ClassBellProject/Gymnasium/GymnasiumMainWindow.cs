@@ -173,13 +173,12 @@ namespace ClassBellProject.Gymnasium
             "AM",
             "PM"
         };
-        List<string> days = new List<string>();
 
         public List<string> KeepDaysSelected()
         {
             List<string> daysChecked = new List<string>();
 
-            days = checkedListBoxDaysGymnasium.Items.Cast<string>().ToList();
+            List<string> days = checkedListBoxDaysGymnasium.Items.Cast<string>().ToList();
 
             foreach (string day in days)
             {
@@ -242,7 +241,7 @@ namespace ClassBellProject.Gymnasium
                         if (daysSelected[i] == DateTime.Now.DayOfWeek.ToString())
                         {
                             int[] shuffleSongsGymnasium = ShuffleAllSongsGymnasium();
-                            int songCursor = 0;                       
+                            int songCursor = 0;
                             int indexNumber = 0;
                             int actualDayKeyForIntervalsAndChecks = indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key;
                             List<IntervalsAndChecksGymnasium> actualIntervalsAndChecksByDayId = GetAllIntervalsAndChecksGymnasiumByDayId(actualDayKeyForIntervalsAndChecks);
@@ -381,7 +380,7 @@ namespace ClassBellProject.Gymnasium
 
                             if (indexNumber < actualIntervalsAndChecksByDayId.Count)
                             {
-                                if (actualIntervalsAndChecksByDayId[4].Start != "" && actualIntervalsAndChecksByDayId[4].Stop != "" && 
+                                if (actualIntervalsAndChecksByDayId[4].Start != "" && actualIntervalsAndChecksByDayId[4].Stop != "" &&
                                     DateTime.Parse(DateTime.Now.ToLongTimeString()) < DateTime.Parse(actualIntervalsAndChecksByDayId[4].Stop))
                                 {
                                     if (actualIntervalsAndChecksByDayId[4].HoldOn == true)
@@ -414,7 +413,7 @@ namespace ClassBellProject.Gymnasium
 
                             if (indexNumber < actualIntervalsAndChecksByDayId.Count)
                             {
-                                if (actualIntervalsAndChecksByDayId[5].Start != "" && actualIntervalsAndChecksByDayId[5].Stop != "" && 
+                                if (actualIntervalsAndChecksByDayId[5].Start != "" && actualIntervalsAndChecksByDayId[5].Stop != "" &&
                                     DateTime.Parse(DateTime.Now.ToLongTimeString()) < DateTime.Parse(actualIntervalsAndChecksByDayId[5].Stop))
                                 {
                                     if (actualIntervalsAndChecksByDayId[5].HoldOn == true)
@@ -513,7 +512,7 @@ namespace ClassBellProject.Gymnasium
 
                             if (indexNumber < actualIntervalsAndChecksByDayId.Count)
                             {
-                                if (actualIntervalsAndChecksByDayId[8].Start != "" && actualIntervalsAndChecksByDayId[8].Stop != "" && 
+                                if (actualIntervalsAndChecksByDayId[8].Start != "" && actualIntervalsAndChecksByDayId[8].Stop != "" &&
                                     DateTime.Parse(DateTime.Now.ToLongTimeString()) < DateTime.Parse(actualIntervalsAndChecksByDayId[8].Stop))
                                 {
                                     if (actualIntervalsAndChecksByDayId[8].HoldOn == true)
@@ -546,7 +545,7 @@ namespace ClassBellProject.Gymnasium
 
                             if (indexNumber < actualIntervalsAndChecksByDayId.Count)
                             {
-                                if (actualIntervalsAndChecksByDayId[9].Start != "" && actualIntervalsAndChecksByDayId[9].Stop != "" && 
+                                if (actualIntervalsAndChecksByDayId[9].Start != "" && actualIntervalsAndChecksByDayId[9].Stop != "" &&
                                     DateTime.Parse(DateTime.Now.ToLongTimeString()) < DateTime.Parse(actualIntervalsAndChecksByDayId[9].Stop))
                                 {
                                     if (actualIntervalsAndChecksByDayId[9].HoldOn == true)
@@ -576,6 +575,21 @@ namespace ClassBellProject.Gymnasium
                                 }
                             }
                             indexNumber++;
+                        }
+                        else
+                        {
+                            List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = GetAllIntervalsAndChecksPrimaryByDayId(indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key);
+                            if (daysSelected.Count > 1)
+                            {
+                                string nextDayInterval = intervalsAndChecksPrimary[indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i + 1]).Key].Start;
+                                var time1 = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[0].Start)).TotalMilliseconds);
+                                await Task.Delay((int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[0].Start)).TotalMilliseconds));
+                            }
+                            else
+                            {
+                                var time2 = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds);
+                                await Task.Delay((int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds));
+                            }
                         }
                     }
                 }
@@ -5770,7 +5784,52 @@ namespace ClassBellProject.Gymnasium
             }
         }
 
-        CancellationTokenSource cancellationTokenSource;
+        public List<IntervalsAndChecksPrimary> ReadIntervalsAndChecksPrimaryFromDatabase()
+        {
+            string connectionString = @"Data Source=MIHAIFLORIN\SQLEXPRESS;Initial Catalog=ClassBellProject;Integrated Security=True;";
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            sqlConnection.Open();
+            SqlCommand sqlCommand = new SqlCommand("select * from IntervalsAndChecksPrimary;", sqlConnection);
+            SqlDataReader reader = sqlCommand.ExecuteReader();
+            List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = new List<IntervalsAndChecksPrimary>();
+            while (reader.Read())
+            {
+                intervalsAndChecksPrimary.Add(new IntervalsAndChecksPrimary()
+                {
+                    Id = (int)reader.GetValue(0),
+                    DayPrimaryId = (int)reader.GetValue(1),
+                    Start = reader.GetValue(2).ToString(),
+                    Stop = reader.GetValue(3).ToString(),
+                    ExitTone = (bool)reader.GetValue(4),
+                    EntranceTone = (bool)reader.GetValue(5),
+                    HoldMusic = (bool)reader.GetValue(6),
+                    HoldOn = (bool)reader.GetValue(7),
+                    HoldCourse = (bool)reader.GetValue(8),
+                });
+            }
+            sqlConnection.Close();
+
+            return intervalsAndChecksPrimary;
+        }
+
+        public List<IntervalsAndChecksPrimary> GetAllIntervalsAndChecksPrimaryByDayId(int dayId)
+        {
+            List<IntervalsAndChecksPrimary> intervalsAndChecksPrimaryToReturn = new List<IntervalsAndChecksPrimary>();
+            List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = ReadIntervalsAndChecksPrimaryFromDatabase();
+            for (int iterator = 0; iterator < intervalsAndChecksPrimary.Count; iterator++)
+            {
+                if (intervalsAndChecksPrimary[iterator].DayPrimaryId == dayId &&
+                    intervalsAndChecksPrimary[iterator].Start != "" &&
+                    intervalsAndChecksPrimary[iterator].Stop != "")
+                {
+                    intervalsAndChecksPrimaryToReturn.Add(intervalsAndChecksPrimary[iterator]);
+                }
+            }
+
+            return intervalsAndChecksPrimaryToReturn;
+        }
+
+        CancellationTokenSource cancellationTokenSourceGymnasium;
 
         private async void buttonStartIntervalsAndDaysGymnasium_Click(object sender, EventArgs e)
         {
@@ -5778,8 +5837,8 @@ namespace ClassBellProject.Gymnasium
             if (daysSelected.Count > 0)
             {               
                 buttonStartIntervalsAndDaysGymnasium.Enabled = false;
-                cancellationTokenSource = new CancellationTokenSource();
-                await Task.Run(() => StartSongsAndTonesByIntervalsAndDaysGymnasiumAsync(cancellationTokenSource.Token));
+                cancellationTokenSourceGymnasium = new CancellationTokenSource();
+                await Task.Run(() => StartSongsAndTonesByIntervalsAndDaysGymnasiumAsync(cancellationTokenSourceGymnasium.Token));
             }
             else
             {
@@ -5792,11 +5851,11 @@ namespace ClassBellProject.Gymnasium
             using SoundPlayer soundPlayerForASongGymnasium = new SoundPlayer();
             using SoundPlayer soundPlayerForAToneGymnasium = new SoundPlayer();
             buttonStartIntervalsAndDaysGymnasium.Enabled = true;
-            cancellationTokenSource.Cancel();
+            cancellationTokenSourceGymnasium.Cancel();
             soundPlayerForASongGymnasium.Stop();
             soundPlayerForAToneGymnasium.Stop();
         }
-
+        
         private void listBoxSelectDayGymnasium_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateIntervalsAndChecksSelectingDay();

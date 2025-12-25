@@ -172,13 +172,12 @@ namespace ClassBellProject.Primary
             "AM",
             "PM"
         };
-        List<string> days = new List<string>();
 
         public List<string> KeepDaysSelected()
         {
             List<string> daysChecked = new List<string>();
 
-            days = checkedListBoxDaysPrimary.Items.Cast<string>().ToList();
+            List<string> days = checkedListBoxDaysPrimary.Items.Cast<string>().ToList();
 
             foreach (string day in days)
             {
@@ -584,7 +583,7 @@ namespace ClassBellProject.Primary
             }
         }
 
-        public List<IntervalsAndChecksPrimary>  GetAllIntervalsAndChecksPrimaryByDayId(int dayId)
+        public List<IntervalsAndChecksPrimary> GetAllIntervalsAndChecksPrimaryByDayId(int dayId)
         {
             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimaryToReturn = new List<IntervalsAndChecksPrimary>();
             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = ReadIntervalsAndChecksPrimaryFromDatabase();
