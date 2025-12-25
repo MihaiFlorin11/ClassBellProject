@@ -89,11 +89,6 @@ namespace ClassBellProject.Primary
             }
         }
 
-        SoundPlayer soundPlayerForASongPrimary = new SoundPlayer();
-        SoundPlayer soundPlayerForATonePrimary = new SoundPlayer();
-
-        Dictionary<string, string> intervalsSongsMain = new Dictionary<string, string>();
-
         List<string> hours = new List<string>()
         {
             "01",
@@ -177,9 +172,7 @@ namespace ClassBellProject.Primary
             "AM",
             "PM"
         };
-        string dayChecked;
         List<string> days = new List<string>();
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public List<string> KeepDaysSelected()
         {
@@ -235,9 +228,6 @@ namespace ClassBellProject.Primary
             };
 
             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = new List<IntervalsAndChecksPrimary>();
-            List<int> indexesDays = new List<int>();
-            List<string> intervalsStart = new List<string>();
-            List<string> intervalsStop = new List<string>();
             List<string> daysSelected = KeepDaysSelected();
 
             if (daysSelected.Count == 0)
@@ -594,7 +584,7 @@ namespace ClassBellProject.Primary
             }
         }
 
-        public List<IntervalsAndChecksPrimary> GetAllIntervalsAndChecksPrimaryByDayId(int dayId)
+        public List<IntervalsAndChecksPrimary>  GetAllIntervalsAndChecksPrimaryByDayId(int dayId)
         {
             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimaryToReturn = new List<IntervalsAndChecksPrimary>();
             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = ReadIntervalsAndChecksPrimaryFromDatabase();
@@ -675,6 +665,7 @@ namespace ClassBellProject.Primary
 
         public async Task StartASongByPositionAndTimePrimaryAsync(int position, DateTime dateTime)
         {
+            using SoundPlayer soundPlayerForASongPrimary = new SoundPlayer();
             string[] songsPrimary = GetAllSongsPrimary();
             soundPlayerForASongPrimary.SoundLocation = songsPrimary[position];
             decimal songDuration = GetNumberOfSecondsOfASongPrimary(songsPrimary[position]);
@@ -693,6 +684,7 @@ namespace ClassBellProject.Primary
 
         public async Task StartAToneByPositionPrimaryAsync(int position)
         {
+            using SoundPlayer soundPlayerForATonePrimary = new SoundPlayer();
             string[] tonesPrimary = GetAllTonesPrimary();
             soundPlayerForATonePrimary.SoundLocation = tonesPrimary[position];
             decimal songDuration = GetNumberOfSecondsOfATonePrimary(tonesPrimary[position]);
@@ -732,7 +724,7 @@ namespace ClassBellProject.Primary
             SqlCommand sqlCommand;
             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = new List<IntervalsAndChecksPrimary>();
 
-            dayChecked = listBoxSelectDayPrimary.SelectedItem.ToString();
+            string dayChecked = listBoxSelectDayPrimary.SelectedItem.ToString();
             switch (dayChecked)
             {
                 case "Luni":
@@ -4295,7 +4287,7 @@ namespace ClassBellProject.Primary
             string[] stopIntervalComponents;
             string[] timeStopIntervalComponents;
 
-            dayChecked = listBoxSelectDayPrimary.SelectedItem.ToString();
+            string dayChecked = listBoxSelectDayPrimary.SelectedItem.ToString();
             switch (dayChecked)
             {
                 case "Luni":
@@ -5651,14 +5643,16 @@ namespace ClassBellProject.Primary
             }
         }
 
+        CancellationTokenSource cancellationTokenSourcePrimary;
+
         private async void buttonStartIntervalsAndDaysPrimary_Click(object sender, EventArgs e)
         {
             List<string> daysSelected = KeepDaysSelected();
             if (daysSelected.Count > 0)
             {
                 buttonStartIntervalsAndDaysPrimary.Enabled = false;
-                cancellationTokenSource = new CancellationTokenSource();
-                await Task.Run(() => StartSongsAndTonesByIntervalsAndDayPrimaryAsync(cancellationTokenSource.Token), cancellationTokenSource.Token);
+                cancellationTokenSourcePrimary = new CancellationTokenSource();
+                await Task.Run(() => StartSongsAndTonesByIntervalsAndDayPrimaryAsync(cancellationTokenSourcePrimary.Token));
             }
             else
             {
@@ -5668,8 +5662,11 @@ namespace ClassBellProject.Primary
 
         private void buttonStopIntervalsAndDaysPrimary_Click(object sender, EventArgs e)
         {
+            using SoundPlayer soundPlayerForASongPrimary = new SoundPlayer();
+            using SoundPlayer soundPlayerForATonePrimary = new SoundPlayer();
             buttonStartIntervalsAndDaysPrimary.Enabled = true;
-            cancellationTokenSource.Cancel();
+
+            cancellationTokenSourcePrimary.Cancel();
             soundPlayerForASongPrimary.Stop();
             soundPlayerForATonePrimary.Stop();
         }

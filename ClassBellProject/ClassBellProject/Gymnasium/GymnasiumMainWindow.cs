@@ -90,9 +90,6 @@ namespace ClassBellProject.Gymnasium
             }
         }
 
-        SoundPlayer soundPlayerForASongGymnasium = new SoundPlayer();
-        SoundPlayer soundPlayerForAToneGymnasium = new SoundPlayer();
-
         List<string> hours = new List<string>()
         {
             "01",
@@ -176,9 +173,7 @@ namespace ClassBellProject.Gymnasium
             "AM",
             "PM"
         };
-        string dayChecked;
         List<string> days = new List<string>();
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public List<string> KeepDaysSelected()
         {
@@ -232,10 +227,6 @@ namespace ClassBellProject.Gymnasium
                 {6,  "Saturday"},
                 {7,  "Sunday"}
             };
-            List<IntervalsAndChecksGymnasium> intervalsAndChecksGymnasium = new List<IntervalsAndChecksGymnasium>();
-            List<int> indexesDays = new List<int>();
-            List<string> intervalsStart = new List<string>();
-            List<string> intervalsStop = new List<string>();
             List<string> daysSelected = KeepDaysSelected();
 
             if (daysSelected.Count == 0)
@@ -691,6 +682,7 @@ namespace ClassBellProject.Gymnasium
 
         public async Task StartASongByPositionAndTimeGymnasiumAsync(int position, DateTime dateTime)
         {
+            using SoundPlayer soundPlayerForASongGymnasium = new SoundPlayer();
             string[] songsGymnasium = GetAllSongsGymnasium();
             soundPlayerForASongGymnasium.SoundLocation = songsGymnasium[position];
             decimal songDuration = GetNumberOfSecondsOfASongGymnasium(songsGymnasium[position]);
@@ -709,6 +701,7 @@ namespace ClassBellProject.Gymnasium
 
         public async Task StartAToneByPositionGymnasiumAsync(int position)
         {
+            using SoundPlayer soundPlayerForAToneGymnasium = new SoundPlayer();
             string[] tonesGymnasium = GetAllTonesGymnasium();
             soundPlayerForAToneGymnasium.SoundLocation = tonesGymnasium[position];
             decimal songDuration = GetNumberOfSecondsOfAToneGymnasium(tonesGymnasium[position]);
@@ -748,7 +741,7 @@ namespace ClassBellProject.Gymnasium
             SqlCommand sqlCommand;
             List<IntervalsAndChecksGymnasium> intervalsAndChecksGymnasium = new List<IntervalsAndChecksGymnasium>();
 
-            dayChecked = listBoxSelectDayGymnasium.SelectedItem.ToString();
+            string dayChecked = listBoxSelectDayGymnasium.SelectedItem.ToString();
             switch (dayChecked)
             {
                 case "Luni":
@@ -4351,7 +4344,7 @@ namespace ClassBellProject.Gymnasium
             string[] stopIntervalComponents;
             string[] timeStopIntervalComponents;
 
-            dayChecked = listBoxSelectDayGymnasium.SelectedItem.ToString();
+            string dayChecked = listBoxSelectDayGymnasium.SelectedItem.ToString();
             switch (dayChecked)
             {
                 case "Luni":
@@ -5777,6 +5770,8 @@ namespace ClassBellProject.Gymnasium
             }
         }
 
+        CancellationTokenSource cancellationTokenSource;
+
         private async void buttonStartIntervalsAndDaysGymnasium_Click(object sender, EventArgs e)
         {
             List<string> daysSelected = KeepDaysSelected();
@@ -5784,7 +5779,7 @@ namespace ClassBellProject.Gymnasium
             {               
                 buttonStartIntervalsAndDaysGymnasium.Enabled = false;
                 cancellationTokenSource = new CancellationTokenSource();
-                await Task.Run(() => StartSongsAndTonesByIntervalsAndDaysGymnasiumAsync(cancellationTokenSource.Token), cancellationTokenSource.Token);
+                await Task.Run(() => StartSongsAndTonesByIntervalsAndDaysGymnasiumAsync(cancellationTokenSource.Token));
             }
             else
             {
@@ -5794,6 +5789,8 @@ namespace ClassBellProject.Gymnasium
 
         private void buttonStopIntervalsAndDaysGymnasium_Click(object sender, EventArgs e)
         {
+            using SoundPlayer soundPlayerForASongGymnasium = new SoundPlayer();
+            using SoundPlayer soundPlayerForAToneGymnasium = new SoundPlayer();
             buttonStartIntervalsAndDaysGymnasium.Enabled = true;
             cancellationTokenSource.Cancel();
             soundPlayerForASongGymnasium.Stop();
