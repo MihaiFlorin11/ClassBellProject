@@ -587,8 +587,8 @@ namespace ClassBellProject.Gymnasium
                             }
                             else
                             {
-                                var time2 = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds);
-                                await Task.Delay((int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds));
+                                var timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[0].Start)).TotalMilliseconds) + ((7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) * 86400000);
+                                await Task.Delay(timeToWait);
                             }
                         }
                     }
