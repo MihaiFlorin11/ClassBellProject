@@ -581,27 +581,47 @@ namespace ClassBellProject.Gymnasium
                             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = GetAllIntervalsAndChecksPrimaryByDayId(indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key);
                             if (daysSelected.Count == 1)
                             {
-                                int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[0].Start)).TotalMilliseconds) + ((7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) * 86400000);
+                                int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds) + ((indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key + 1) * 86400000);
                                 await Task.Delay(timeToWait);
                             }
-                            else if (daysSelected.Count > 1 && i < daysSelected.Count && (7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) < 1)
+                            else
                             {
-                                string nextDayInterval = intervalsAndChecksPrimary[indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i + 1]).Key].Start;
-                                int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(nextDayInterval)).TotalMilliseconds);
-                                await Task.Delay(timeToWait);
+                                int previousCase = 0;
+                                switch (indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key)
+                                {
+                                    case 1:
+                                        var todayIndex = indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key;
+                                        {
+
+                                        }
+                                        previousCase = 1;
+                                        break;
+
+                                }
                             }
-                            else if (daysSelected.Count > 1 && (7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) == 1)
-                            {
-                                string nextDayInterval = intervalsAndChecksPrimary[indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i + 1]).Key].Start;
-                                int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(nextDayInterval)).TotalMilliseconds) + 86400000;
-                                await Task.Delay(timeToWait);
-                            }
-                            else if (daysSelected.Count > 1 && (7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) > 1)
-                            {
-                                string nextDayInterval = intervalsAndChecksPrimary[indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i + 1]).Key].Start;
-                                int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds) + ((7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) * 86400000);
-                                await Task.Delay((int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[0].Start)).TotalMilliseconds));
-                            }
+                            //if (daysSelected.Count == 1)
+                            //{
+                            //    int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds) + ((indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key + 1) * 86400000);
+                            //    await Task.Delay(timeToWait);
+                            //}
+                            //else if (daysSelected.Count > 1 && (7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) < 1)
+                            //{
+                            //    string nextDayInterval = intervalsAndChecksPrimary[indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i + 1]).Key].Start;
+                            //    int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(nextDayInterval)).TotalMilliseconds);
+                            //    await Task.Delay(timeToWait);
+                            //}
+                            //else if (daysSelected.Count > 1 && (7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) == 1)
+                            //{
+                            //    string nextDayInterval = intervalsAndChecksPrimary[indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i + 1]).Key].Start;
+                            //    int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(nextDayInterval)).TotalMilliseconds) + 86400000;
+                            //    await Task.Delay(timeToWait);
+                            //}
+                            //else if (daysSelected.Count > 1 && (7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) > 1)
+                            //{
+                            //    //string nextDayInterval = intervalsAndChecksPrimary[indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key].Start;
+                            //    int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds) + ((7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key + 1) * 86400000);
+                            //    await Task.Delay(timeToWait);
+                            //}
                         }
                     }
                 }
