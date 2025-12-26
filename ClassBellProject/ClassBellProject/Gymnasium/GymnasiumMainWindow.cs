@@ -579,15 +579,28 @@ namespace ClassBellProject.Gymnasium
                         else
                         {
                             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = GetAllIntervalsAndChecksPrimaryByDayId(indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key);
-                            if (daysSelected.Count == 1)
+                            if (intervalsAndChecksPrimary.Count == 0)
                             {
-                                int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds) + ((indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key + 1) * 86400000);
-                                await Task.Delay(timeToWait);
+                                MessageBox.Show("Nu exista intervale pentru ziua selectata");
+                                return;
                             }
                             if (daysSelected.Count == 1)
                             {
-                                int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds) + ((indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key + 1) * 86400000);
-                                await Task.Delay(timeToWait);
+                                if (indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key <
+                                    indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key)
+                                {
+                                    int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds) + 
+                                                     ((7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key + 
+                                                     indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key) * 86400000);
+                                    await Task.Delay(timeToWait);
+                                }
+                                else
+                                {
+                                    int timeToWait = (int)Math.Abs(DateTime.Now.Subtract(DateTime.Parse(intervalsAndChecksPrimary[i].Start)).TotalMilliseconds) + 
+                                                     ((7 - indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key) * 86400000);
+                                    await Task.Delay(timeToWait);
+                                }
+                                
                             }
                             else if (daysSelected.Count > 1 && (7 - indexesAndDays.FirstOrDefault(x => x.Value == DateTime.Now.DayOfWeek.ToString()).Key) < 1)
                             {
