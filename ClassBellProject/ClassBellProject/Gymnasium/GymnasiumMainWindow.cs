@@ -579,11 +579,11 @@ namespace ClassBellProject.Gymnasium
                         else
                         {
                             List<IntervalsAndChecksPrimary> intervalsAndChecksPrimary = GetAllIntervalsAndChecksPrimaryByDayId(indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key);
-                            if (intervalsAndChecksPrimary.Count == 0)
-                            {
-                                MessageBox.Show("Nu exista intervale pentru ziua selectata");
-                                return;
-                            }
+                            //if (intervalsAndChecksPrimary.Count == 0)
+                            //{
+                            //    MessageBox.Show("Nu exista intervale pentru ziua selectata");
+                            //    return;
+                            //}
                             if (daysSelected.Count == 1)
                             {
                                 if (indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key <
