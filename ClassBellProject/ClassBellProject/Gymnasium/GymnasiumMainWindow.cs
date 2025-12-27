@@ -242,7 +242,7 @@ namespace ClassBellProject.Gymnasium
                         if (daysSelected[i] == DateTime.Now.DayOfWeek.ToString())
                         {
                             int[] shuffleSongsGymnasium = ShuffleAllSongsGymnasium();
-                            int songCursor = 0;                          
+                            int songCursor = 0;
                             int actualDayKeyForIntervalsAndChecks = indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key;
                             List<IntervalsAndChecksGymnasium> actualIntervalsAndChecksByDayId = GetAllIntervalsAndChecksGymnasiumByDayId(actualDayKeyForIntervalsAndChecks);
 
@@ -576,6 +576,7 @@ namespace ClassBellProject.Gymnasium
                             }
                             indexNumber++;
                         }
+
                         if (indexNumber > 0)
                         {
                             if (daysSelected.Count == i + 1)
@@ -585,33 +586,35 @@ namespace ClassBellProject.Gymnasium
 
                                 string lastStopIntervalFromGymnasiumByDayId = GetAllIntervalsAndChecksGymnasiumByDayId
                                                                               (indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key)
-                                                                              [numberOfIntervalsFromGymnasiumByDayId].Stop;
+                                                                              [numberOfIntervalsFromGymnasiumByDayId - 1].Stop;
 
                                 string firstStartIntervalForNextDayFromPrimaryByDayId = GetAllIntervalsAndChecksPrimaryByDayId
                                                                                         (indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[0]).Key)[0].Start;
 
                                 string midnight = "12:00:00 AM";
-                                int timeFromLastStopIntervalFromGymnasiumToMidnight = (int)Math.Abs(DateTime.Parse(lastStopIntervalFromGymnasiumByDayId).Subtract(DateTime.Parse(midnight)).TotalMilliseconds);
+                                int oneDayInMilliseconds = 86400000;
+                                int timeFromLastStopIntervalFromGymnasiumToMidnight = oneDayInMilliseconds - (int)Math.Abs(DateTime.Parse(lastStopIntervalFromGymnasiumByDayId).Subtract(DateTime.Parse(midnight)).TotalMilliseconds);
                                 int timeFromMidnightToFirstStartIntervalForNextDayPrimary = (int)Math.Abs(DateTime.Parse(midnight).Subtract(DateTime.Parse(firstStartIntervalForNextDayFromPrimaryByDayId)).TotalMilliseconds);
-                                await Task.Delay(((7 - daysSelected.Count) * 86400000) + timeFromLastStopIntervalFromGymnasiumToMidnight + timeFromMidnightToFirstStartIntervalForNextDayPrimary);
+                                await Task.Delay(((7 - daysSelected.Count) * oneDayInMilliseconds) + timeFromLastStopIntervalFromGymnasiumToMidnight + timeFromMidnightToFirstStartIntervalForNextDayPrimary);
                             }
                             else
                             {
                                 int numberOfIntervalsFromGymnasiumByDayId = GetAllIntervalsAndChecksGymnasiumByDayId
-                                                                            (indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key).Count;
+                                (indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key).Count;
 
                                 string lastStopIntervalFromGymnasiumByDayId = GetAllIntervalsAndChecksGymnasiumByDayId
                                                                               (indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i]).Key)
-                                                                              [numberOfIntervalsFromGymnasiumByDayId].Stop;
+                                                                              [numberOfIntervalsFromGymnasiumByDayId - 1].Stop;
 
                                 string firstStartIntervalForNextDayFromPrimaryByDayId = GetAllIntervalsAndChecksPrimaryByDayId
                                                                                         (indexesAndDays.FirstOrDefault(x => x.Value == daysSelected[i + 1]).Key)[0].Start;
 
                                 string midnight = "12:00:00 AM";
-                                int timeFromLastStopIntervalFromGymnasiumToMidnight = (int)Math.Abs(DateTime.Parse(lastStopIntervalFromGymnasiumByDayId).Subtract(DateTime.Parse(midnight)).TotalMilliseconds);
+                                int oneDayInMilliseconds = 86400000;
+                                int timeFromLastStopIntervalFromGymnasiumToMidnight = oneDayInMilliseconds - (int)Math.Abs(DateTime.Parse(lastStopIntervalFromGymnasiumByDayId).Subtract(DateTime.Parse(midnight)).TotalMilliseconds);
                                 int timeFromMidnightToFirstStartIntervalForNextDayPrimary = (int)Math.Abs(DateTime.Parse(midnight).Subtract(DateTime.Parse(firstStartIntervalForNextDayFromPrimaryByDayId)).TotalMilliseconds);
                                 await Task.Delay(timeFromLastStopIntervalFromGymnasiumToMidnight + timeFromMidnightToFirstStartIntervalForNextDayPrimary);
-                            }                          
+                            }
                         }
                     }
                 }
