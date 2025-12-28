@@ -717,7 +717,7 @@ namespace ClassBellProject.Primary
 
         public void UpdateTableIntervalsAndChecksPrimaryForACertainDayInDatabase()
         {
-            string connectionString = @"Data Source=MIHAIFLORIN\SQLEXPRESS;Initial Catalog=ClassBellProject;Integrated Security=True;";
+            string connectionString = @"Data Source=DESKTOP-UNF4NUL\SQLEXPRESS;Initial Catalog=ClassBellProject;Integrated Security=True;";
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
             SqlCommand sqlCommand;
@@ -4251,7 +4251,7 @@ namespace ClassBellProject.Primary
 
         public List<IntervalsAndChecksPrimary> ReadIntervalsAndChecksPrimaryFromDatabase()
         {
-            string connectionString = @"Data Source=MIHAIFLORIN\SQLEXPRESS;Initial Catalog=ClassBellProject;Integrated Security=True;";
+            string connectionString = @"Data Source=DESKTOP-UNF4NUL\SQLEXPRESS;Initial Catalog=ClassBellProject;Integrated Security=True;";
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
             SqlCommand sqlCommand = new SqlCommand("select * from IntervalsAndChecksPrimary;", sqlConnection);
